@@ -1,11 +1,9 @@
 namespace ListaTarefas.Entities;
 using System;
-using System.Collections.Generic;
-using ListaTarefas.Enums;
 
 public class Tarefa
 {
-    public Tarefa(string titulo, string descricao, StatusTarefaEnum status)
+    public Tarefa(string titulo, string descricao, bool status)
     {
         Titulo = titulo;
         Descricao = descricao;
@@ -15,7 +13,7 @@ public class Tarefa
     public DateTime Date { get; set; }
     public string Titulo { get; set; }
     public string ?Descricao { get; set; }
-    public StatusTarefaEnum Status { get; set; }
+    public bool Status { get; set; }
     public void Update(string titulo, string descricao ){
             Titulo = titulo;
             Descricao = descricao;
