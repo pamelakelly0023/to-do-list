@@ -8,7 +8,7 @@
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.Extensions.Logging;
 
-    [Authorize]
+    // [Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class TarefaController : ControllerBase

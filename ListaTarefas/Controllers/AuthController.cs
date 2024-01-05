@@ -8,6 +8,7 @@ using ListaTarefas.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ListaTarefas.Controllers
 {
@@ -35,7 +36,15 @@ namespace ListaTarefas.Controllers
         [HttpPost("registrar")]
         public async Task<ActionResult> Registrar (RegistrarUsuarioModel registrarUser)
         {
-            var user = new IdentityUser
+            var userExist = await _userManager.FindByEmailAsync(registrarUser.Email);
+
+            if (userExist is not null)
+                return StatusCode(
+                  StatusCodes.Status500InternalServerError,
+                  new ResponseModel { Success = false, Message = "Usuário já Existe!" }  
+                );
+
+            IdentityUser user = new()
             {
                 UserName = registrarUser.Email,
                 Email = registrarUser.Email,
@@ -44,21 +53,34 @@ namespace ListaTarefas.Controllers
 
             var result = await _userManager.CreateAsync(user, registrarUser.Password);
 
-            if(result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, false);
-                //return CreatedAtAction("User", new { user = user.Email }, user);
-                return Ok(GerarTokenJWT());
-            } 
-            foreach (var error in result.Errors)
-            {
-                var notificacao = error.Description;
-                return BadRequest(notificacao);
-            }
+            if(!result.Succeeded)
+                return StatusCode (
+                    StatusCodes.Status500InternalServerError,
+                    new ResponseModel { Success = false, Message = "Erro ao criar usuário" }
+                );
 
-            _logger.LogInformation("Usuario: {user} registrado:", user.UserName);
-            return CreatedAtAction("Usuario", registrarUser);
+            return Ok(new ResponseModel { Message = "Usuário criado com Sucesso!"});
+            
         }
+
+        // public async Task<ActionResult> Entrar(LoginUsuarioModel loginUser )
+        // {
+        //     var result = await _signInManager.PasswordSignInAsync(loginUser.Email, loginUser.Password, false, true);
+
+        //     if(result.Succeeded)
+        //     {
+        //          _logger.LogInformation("Usuario: {user} logado com sucesso:", loginUser.Email);
+        //          return Ok(GerarTokenJWT());
+        //     }
+        //     if (result.IsLockedOut)
+        //     {
+        //         // Usuário temporariamente bloqueado por tentativas inválidas
+        //         // TODO: Criar esse retorno de erro customizado. 
+        //     }
+
+        //     return 
+
+        // }
 
         [HttpGet]
         private string GerarTokenJWT()
