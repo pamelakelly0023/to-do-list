@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using FluentValidation;
 
 namespace ListaTarefas.Controllers
 {
@@ -20,29 +21,37 @@ namespace ListaTarefas.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly AppSettings _appSettings;
         private readonly ILogger _logger;
+        private readonly IValidator<RegistrarUsuarioModel> _validator;
 
         public AuthController( 
                               SignInManager<IdentityUser> signInManager, 
                               UserManager<IdentityUser> userManager, 
                               IOptions<AppSettings> appSettings,
-                              ILogger<AuthController> logger)
+                              ILogger<AuthController> logger,
+                              IValidator<RegistrarUsuarioModel> validator)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _appSettings = appSettings.Value;
+            _validator = validator;
         }
 
         [HttpPost("registrar")]
         public async Task<ActionResult> Registrar (RegistrarUsuarioModel registrarUser)
         {
+            var validation = await _validator.ValidateAsync(registrarUser);
             var userExist = await _userManager.FindByEmailAsync(registrarUser.Email);
 
-            if (userExist is not null)
-                return StatusCode(
-                  StatusCodes.Status500InternalServerError,
-                  new ResponseModel { Success = false, Message = "Usuário já Existe!" }  
-                );
+            // if (userExist is not null)
+            //     return StatusCode(
+            //       StatusCodes.Status500InternalServerError,
+            //       new ResponseModel { Success = false, Message = "Usuário já Existe!" }  
+            //     );
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.GetErrors());
+            }
 
             IdentityUser user = new()
             {
@@ -53,11 +62,11 @@ namespace ListaTarefas.Controllers
 
             var result = await _userManager.CreateAsync(user, registrarUser.Password);
 
-            if(!result.Succeeded)
-                return StatusCode (
-                    StatusCodes.Status500InternalServerError,
-                    new ResponseModel { Success = false, Message = "Erro ao criar usuário" }
-                );
+            // if(!result.Succeeded)
+            //     return StatusCode (
+            //         StatusCodes.Status500InternalServerError,
+            //         new ResponseModel { Success = false, Message = "Erro ao criar usuário" }
+            //     );
 
             return Ok(new ResponseModel { Message = "Usuário criado com Sucesso!"});
             
