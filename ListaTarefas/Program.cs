@@ -1,6 +1,7 @@
 using ListaTarefas.Configuration;
 using ListaTarefas.Entities;
 using ListaTarefas.Extensions;
+using ListaTarefas.Models;
 using ListaTarefas.Persistence;
 using ListaTarefas.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 });
 
 builder.Services.AddIdentityConfig(builder.Configuration);
-builder.Services.AddFluentValidation(typeof(LoginUsuarioModelValidator));
+builder.Services.AddFluentValidation(typeof(RegistrarUsuarioModel));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
