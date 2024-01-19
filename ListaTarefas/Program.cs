@@ -26,7 +26,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 });
 
 builder.Services.AddIdentityConfig(builder.Configuration);
-builder.Services.AddFluentValidation(typeof(RegistrarUsuarioModel));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

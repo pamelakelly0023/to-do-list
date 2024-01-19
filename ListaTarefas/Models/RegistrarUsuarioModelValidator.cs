@@ -3,7 +3,7 @@ using FluentValidation;
 namespace ListaTarefas.Models
 {
     
-    public class RegistrarUsuarioModelValidator : AbstractValidator<LoginUsuarioModel>
+    public class RegistrarUsuarioModelValidator : AbstractValidator<RegistrarUsuarioModel>
     {
         public RegistrarUsuarioModelValidator()
         {

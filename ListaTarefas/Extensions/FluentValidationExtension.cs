@@ -1,6 +1,7 @@
 using System.Globalization;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
+using ListaTarefas.Models;
 using Microsoft.Extensions.DependencyInjection; 
 
 namespace ListaTarefas.Extensions;
@@ -8,12 +9,9 @@ public static class FluentValidationExtension
 {
     public static IServiceCollection AddFluentValidation(this IServiceCollection services, Type assemblyContainingValidators)
     {
-        services.AddFluentValidation(conf =>
-        {
-            conf.RegisterValidatorsFromAssemblyContaining(assemblyContainingValidators);
-            conf.AutomaticValidationEnabled = false;
-            conf.ValidatorOptions.LanguageManager.Culture = new CultureInfo("pt-BR");
-        });
+        services.AddFluentValidationAutoValidation();
+        services.AddFluentValidationClientsideAdapters();
+        services.AddFluentValidation(typeof(RegistrarUsuarioModel));
 
         return services;
     }
