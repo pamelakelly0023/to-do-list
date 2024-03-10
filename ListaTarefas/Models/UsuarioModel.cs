@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Identity.Client;
+using Microsoft.Net.Http.Headers;
+
 namespace ListaTarefas.Models
 {
-    public record RegistrarUsuarioModel (string Email, string Password, string ConfirmPassword ){}
-    public record LoginUsuarioModel (string Email, string Password ){}
+    public record class UsuarioModel (string Email, string Password ){}
 }
