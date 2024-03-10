@@ -1,3 +1,4 @@
+using FluentValidation;
 using ListaTarefas.Configuration;
 using ListaTarefas.Entities;
 using ListaTarefas.Extensions;
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<TarefaContext>( options =>
     ServerVersion.AutoDetect(connectionString)));
                 
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddTransient<IValidator<UsuarioModel>, UsuarioModelValidator>();
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
